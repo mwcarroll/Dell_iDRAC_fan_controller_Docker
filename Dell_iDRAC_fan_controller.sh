@@ -9,20 +9,6 @@ source functions.sh
 # Trap the signals for container exit and run gracefull_exit function
 trap 'gracefull_exit' SIGQUIT SIGKILL SIGTERM
 
-# Prepare, format and define initial variables
-
-# readonly DELL_FRESH_AIR_COMPLIANCE=45
-
-# Check if FAN_SPEED variable is in hexadecimal format. If not, convert it to hexadecimal
-if [[ $FAN_SPEED == 0x* ]]
-then
-  readonly DECIMAL_FAN_SPEED=$(printf '%d' $FAN_SPEED)
-  readonly HEXADECIMAL_FAN_SPEED=$FAN_SPEED
-else
-  readonly DECIMAL_FAN_SPEED=$FAN_SPEED
-  readonly HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $FAN_SPEED)
-fi
-
 # Check if the iDRAC host is set to 'local' or not then set the IDRAC_LOGIN_STRING accordingly
 if [[ $IDRAC_HOST == "local" ]]
 then
@@ -51,8 +37,6 @@ echo "Server model: $SERVER_MANUFACTURER $SERVER_MODEL"
 echo "iDRAC/IPMI host: $IDRAC_HOST"
 
 # Log the fan speed objective, CPU temperature threshold and check interval
-echo "Fan speed objective: $DECIMAL_FAN_SPEED%"
-echo "CPU temperature threshold: $CPU_TEMPERATURE_THRESHOLD°C"
 echo "Check interval: ${CHECK_INTERVAL}s"
 echo ""
 
@@ -97,45 +81,70 @@ while true; do
     function CPU2_OVERHEAT () { [ $CPU2_TEMPERATURE -gt $CPU_TEMPERATURE_THRESHOLD ]; }
   fi
 
+  function EXHAUST_OVERHEAT_1 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_1_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_2 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_2_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_3 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_3_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_4 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_4_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_5 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_5_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_6 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_6_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_7 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_7_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_8 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_8_TEMPERATURE ]; }
+  function EXHAUST_OVERHEAT_9 () { [ $EXHAUST_TEMPERATURE -ge $EXHAUST_OVERHEAT_9_TEMPERATURE ]; }
+
   # Initialize a variable to store the comments displayed when the fan control profile changed
   COMMENT=" -"
-  # Check if CPU 1 is overheating then apply Dell default dynamic fan control profile if true
-  if CPU1_OVERHEAT
+  if EXHAUST_OVERHEAT_9
   then
     apply_Dell_fan_control_profile
-
-    if ! $IS_DELL_FAN_CONTROL_PROFILE_APPLIED
-    then
-      IS_DELL_FAN_CONTROL_PROFILE_APPLIED=true
-
-      # If CPU 2 temperature sensor is present, check if it is overheating too.
-      # Do not apply Dell default dynamic fan control profile as it has already been applied before
-      if $IS_CPU2_TEMPERATURE_SENSOR_PRESENT && CPU2_OVERHEAT
-      then
-        COMMENT="CPU 1 and CPU 2 temperatures are too high, Dell default dynamic fan control profile applied for safety"
-      else
-        COMMENT="CPU 1 temperature is too high, Dell default dynamic fan control profile applied for safety"
-      fi
-    fi
-  # If CPU 2 temperature sensor is present, check if it is overheating then apply Dell default dynamic fan control profile if true
-  elif $IS_CPU2_TEMPERATURE_SENSOR_PRESENT && CPU2_OVERHEAT
+    COMMENT="Exhaust temperature is too high ($EXHAUST_TEMPERATURE), Dell default dynamic fan control profile applied for safety"
+  elif EXHAUST_OVERHEAT_8
   then
-    apply_Dell_fan_control_profile
-
-    if ! $IS_DELL_FAN_CONTROL_PROFILE_APPLIED
-    then
-      IS_DELL_FAN_CONTROL_PROFILE_APPLIED=true
-      COMMENT="CPU 2 temperature is too high, Dell default dynamic fan control profile applied for safety"
-    fi
-  else
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_8_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_8_FANSPEED)
     apply_user_fan_control_profile
-
-    # Check if user fan control profile is applied then apply it if not
-    if $IS_DELL_FAN_CONTROL_PROFILE_APPLIED
-    then
-      IS_DELL_FAN_CONTROL_PROFILE_APPLIED=false
-      COMMENT="CPU temperature decreased and is now OK (<= $CPU_TEMPERATURE_THRESHOLD°C), user's fan control profile applied."
-    fi
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_8_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_7
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_7_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_7_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_7_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_6
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_6_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_6_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_6_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_5
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_5_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_5_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_5_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_4
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_4_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_4_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_4_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_3
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_3_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_3_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_3_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_2
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_2_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_2_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_2_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  elif EXHAUST_OVERHEAT_1
+  then
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_1_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_1_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_1_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
   fi
 
   # Enable or disable, depending on the user's choice, third-party PCIe card Dell default cooling response

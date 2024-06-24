@@ -1,11 +1,11 @@
 <div id="top"></div>
 
-> **Warning** If you update to the latest version, be sure to replace "CPU_TEMPERATURE_TRESHOLD" environment variable with "CPU_TEMPERATURE_T<ins>H</ins>RESHOLD" which was a typo
+
 
 # Dell iDRAC fan controller Docker image
 Download Docker image from :
-- [Docker Hub](https://hub.docker.com/r/tigerblue77/dell_idrac_fan_controller)
-- [GitHub Containers Repository](https://github.com/tigerblue77/Dell_iDRAC_fan_controller_Docker/pkgs/container/dell_idrac_fan_controller)
+- [Docker Hub](https://hub.docker.com/r/mattcarroll/dell_idrac_fan_controller)
+- [GitHub Containers Repository](https://github.com/mattcarroll/Dell_iDRAC_fan_controller_Docker/pkgs/container/dell_idrac_fan_controller)
 
 <!-- TABLE OF CONTENTS -->
 <details>
@@ -77,12 +77,27 @@ docker run -d \
   --name Dell_iDRAC_fan_controller \
   --restart=unless-stopped \
   -e IDRAC_HOST=local \
-  -e FAN_SPEED=<decimal or hexadecimal fan speed> \
-  -e CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
   -e DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false> \
+  -e EXHAUST_OVERHEAT_9_TEMPERATURE=60 \
+  -e EXHAUST_OVERHEAT_8_TEMPERATURE=55 \ 
+  -e EXHAUST_OVERHEAT_7_TEMPERATURE=50 \
+  -e EXHAUST_OVERHEAT_6_TEMPERATURE=45 \
+  -e EXHAUST_OVERHEAT_5_TEMPERATURE=40 \
+  -e EXHAUST_OVERHEAT_4_TEMPERATURE=35 \
+  -e EXHAUST_OVERHEAT_3_TEMPERATURE=30 \
+  -e EXHAUST_OVERHEAT_2_TEMPERATURE=25 \
+  -e EXHAUST_OVERHEAT_1_TEMPERATURE=20 \
+  -e EXHAUST_OVERHEAT_8_FANSPEED=45 \
+  -e EXHAUST_OVERHEAT_7_FANSPEED=40 \
+  -e EXHAUST_OVERHEAT_6_FANSPEED=35 \
+  -e EXHAUST_OVERHEAT_5_FANSPEED=30 \
+  -e EXHAUST_OVERHEAT_4_FANSPEED=27 \
+  -e EXHAUST_OVERHEAT_3_FANSPEED=25 \
+  -e EXHAUST_OVERHEAT_2_FANSPEED=22 \ 
+  -e EXHAUST_OVERHEAT_1_FANSPEED=20 \
   --device=/dev/ipmi0:/dev/ipmi0:rw \
-  tigerblue77/dell_idrac_fan_controller:latest
+  mattcarroll/dell_idrac_fan_controller:latest
 ```
 
 2. with LAN iDRAC:
@@ -94,11 +109,26 @@ docker run -d \
   -e IDRAC_HOST=<iDRAC IP address> \
   -e IDRAC_USERNAME=<iDRAC username> \
   -e IDRAC_PASSWORD=<iDRAC password> \
-  -e FAN_SPEED=<decimal or hexadecimal fan speed> \
-  -e CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold> \
   -e CHECK_INTERVAL=<seconds between each check> \
   -e DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false> \
-  tigerblue77/dell_idrac_fan_controller:latest
+  -e EXHAUST_OVERHEAT_9_TEMPERATURE=60 \
+  -e EXHAUST_OVERHEAT_8_TEMPERATURE=55 \ 
+  -e EXHAUST_OVERHEAT_7_TEMPERATURE=50 \
+  -e EXHAUST_OVERHEAT_6_TEMPERATURE=45 \
+  -e EXHAUST_OVERHEAT_5_TEMPERATURE=40 \
+  -e EXHAUST_OVERHEAT_4_TEMPERATURE=35 \
+  -e EXHAUST_OVERHEAT_3_TEMPERATURE=30 \
+  -e EXHAUST_OVERHEAT_2_TEMPERATURE=25 \
+  -e EXHAUST_OVERHEAT_1_TEMPERATURE=20 \
+  -e EXHAUST_OVERHEAT_8_FANSPEED=45 \
+  -e EXHAUST_OVERHEAT_7_FANSPEED=40 \
+  -e EXHAUST_OVERHEAT_6_FANSPEED=35 \
+  -e EXHAUST_OVERHEAT_5_FANSPEED=30 \
+  -e EXHAUST_OVERHEAT_4_FANSPEED=27 \
+  -e EXHAUST_OVERHEAT_3_FANSPEED=25 \
+  -e EXHAUST_OVERHEAT_2_FANSPEED=22 \ 
+  -e EXHAUST_OVERHEAT_1_FANSPEED=20 \
+  mattcarroll/dell_idrac_fan_controller:latest
 ```
 
 `docker-compose.yml` examples:
@@ -110,15 +140,32 @@ version: '3.8'
 
 services:
   Dell_iDRAC_fan_controller:
-    image: tigerblue77/dell_idrac_fan_controller:latest
+    image: mattcarroll/dell_idrac_fan_controller:latest
     container_name: Dell_iDRAC_fan_controller
     restart: unless-stopped
     environment:
       - IDRAC_HOST=local
-      - FAN_SPEED=<decimal or hexadecimal fan speed>
-      - CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold>
       - CHECK_INTERVAL=<seconds between each check>
       - DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false>
+      # temperatures must be in decreasing order
+      - EXHAUST_OVERHEAT_9_TEMPERATURE=60 # anything over this value will enable the default Dell profile
+      - EXHAUST_OVERHEAT_8_TEMPERATURE=55
+      - EXHAUST_OVERHEAT_7_TEMPERATURE=50
+      - EXHAUST_OVERHEAT_6_TEMPERATURE=45
+      - EXHAUST_OVERHEAT_5_TEMPERATURE=40
+      - EXHAUST_OVERHEAT_4_TEMPERATURE=35
+      - EXHAUST_OVERHEAT_3_TEMPERATURE=30
+      - EXHAUST_OVERHEAT_2_TEMPERATURE=25
+      - EXHAUST_OVERHEAT_1_TEMPERATURE=20
+      # fan speeds should be in decreasing order
+      - EXHAUST_OVERHEAT_8_FANSPEED=45
+      - EXHAUST_OVERHEAT_7_FANSPEED=40
+      - EXHAUST_OVERHEAT_6_FANSPEED=35
+      - EXHAUST_OVERHEAT_5_FANSPEED=30
+      - EXHAUST_OVERHEAT_4_FANSPEED=27
+      - EXHAUST_OVERHEAT_3_FANSPEED=25
+      - EXHAUST_OVERHEAT_2_FANSPEED=22
+      - EXHAUST_OVERHEAT_1_FANSPEED=20
     devices:
       - /dev/ipmi0:/dev/ipmi0:rw
 ```
@@ -130,17 +177,34 @@ version: '3.8'
 
 services:
   Dell_iDRAC_fan_controller:
-    image: tigerblue77/dell_idrac_fan_controller:latest
+    image: mattcarroll/dell_idrac_fan_controller:latest
     container_name: Dell_iDRAC_fan_controller
     restart: unless-stopped
     environment:
       - IDRAC_HOST=<iDRAC IP address>
       - IDRAC_USERNAME=<iDRAC username>
       - IDRAC_PASSWORD=<iDRAC password>
-      - FAN_SPEED=<decimal or hexadecimal fan speed>
-      - CPU_TEMPERATURE_THRESHOLD=<decimal temperature threshold>
       - CHECK_INTERVAL=<seconds between each check>
       - DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE=<true or false>
+      # temperatures must be in decreasing order
+      - EXHAUST_OVERHEAT_9_TEMPERATURE=60 # anything over this value will enable the default Dell profile
+      - EXHAUST_OVERHEAT_8_TEMPERATURE=55
+      - EXHAUST_OVERHEAT_7_TEMPERATURE=50
+      - EXHAUST_OVERHEAT_6_TEMPERATURE=45
+      - EXHAUST_OVERHEAT_5_TEMPERATURE=40
+      - EXHAUST_OVERHEAT_4_TEMPERATURE=35
+      - EXHAUST_OVERHEAT_3_TEMPERATURE=30
+      - EXHAUST_OVERHEAT_2_TEMPERATURE=25
+      - EXHAUST_OVERHEAT_1_TEMPERATURE=20
+      # fan speeds should be in decreasing order
+      - EXHAUST_OVERHEAT_8_FANSPEED=45
+      - EXHAUST_OVERHEAT_7_FANSPEED=40
+      - EXHAUST_OVERHEAT_6_FANSPEED=35
+      - EXHAUST_OVERHEAT_5_FANSPEED=30
+      - EXHAUST_OVERHEAT_4_FANSPEED=27
+      - EXHAUST_OVERHEAT_3_FANSPEED=25
+      - EXHAUST_OVERHEAT_2_FANSPEED=22
+      - EXHAUST_OVERHEAT_1_FANSPEED=20
 ```
 
 <p align="right">(<a href="#top">back to top</a>)</p>
@@ -153,10 +217,25 @@ All parameters are optional as they have default values (including default iDRAC
 - `IDRAC_HOST` parameter can be set to "local" or to your distant iDRAC's IP address. **Default** value is "local".
 - `IDRAC_USERNAME` parameter is only necessary if you're adressing a distant iDRAC. **Default** value is "root".
 - `IDRAC_PASSWORD` parameter is only necessary if you're adressing a distant iDRAC. **Default** value is "calvin".
-- `FAN_SPEED` parameter can be set as a decimal (from 0 to 100%) or hexadecimaladecimal value (from 0x00 to 0x64) you want to set the fans to. **Default** value is 5(%).
-- `CPU_TEMPERATURE_THRESHOLD` parameter is the T°junction (junction temperature) threshold beyond which the Dell fan mode defined in your BIOS will become active again (to protect the server hardware against overheat). **Default** value is 50(°C).
 - `CHECK_INTERVAL` parameter is the time (in seconds) between each temperature check and potential profile change. **Default** value is 60(s).
 - `DISABLE_THIRD_PARTY_PCIE_CARD_DELL_DEFAULT_COOLING_RESPONSE` parameter is a boolean that allows to disable third-party PCIe card Dell default cooling response. **Default** value is false.
+- `EXHAUST_OVERHEAT_9_TEMPERATURE` parameter is an integer of maximum exhaust temp
+- `EXHAUST_OVERHEAT_8_TEMPERATURE` parameter is an integer of step 8 exhaust temp
+- `EXHAUST_OVERHEAT_7_TEMPERATURE` parameter is an integer of step 7 exhaust temp
+- `EXHAUST_OVERHEAT_6_TEMPERATURE` parameter is an integer of step 6 exhaust temp
+- `EXHAUST_OVERHEAT_5_TEMPERATURE` parameter is an integer of step 5 exhaust temp
+- `EXHAUST_OVERHEAT_4_TEMPERATURE` parameter is an integer of step 4 exhaust temp
+- `EXHAUST_OVERHEAT_3_TEMPERATURE` parameter is an integer of step 3 exhaust temp
+- `EXHAUST_OVERHEAT_2_TEMPERATURE` parameter is an integer of step 2 exhaust temp
+- `EXHAUST_OVERHEAT_1_TEMPERATURE` parameter is an integer of step 1 exhaust temp
+- `EXHAUST_OVERHEAT_8_FANSPEED` parameter is an integer of step 8 fan speed
+- `EXHAUST_OVERHEAT_7_FANSPEED` parameter is an integer of step 7 fan speed
+- `EXHAUST_OVERHEAT_6_FANSPEED` parameter is an integer of step 6 fan speed
+- `EXHAUST_OVERHEAT_5_FANSPEED` parameter is an integer of step 5 fan speed
+- `EXHAUST_OVERHEAT_4_FANSPEED` parameter is an integer of step 4 fan speed
+- `EXHAUST_OVERHEAT_3_FANSPEED` parameter is an integer of step 3 fan speed
+- `EXHAUST_OVERHEAT_2_FANSPEED` parameter is an integer of step 2 fan speed
+- `EXHAUST_OVERHEAT_1_FANSPEED` parameter is an integer of step 1 fan speed
 
 <p align="right">(<a href="#top">back to top</a>)</p>
 

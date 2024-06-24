@@ -68,27 +68,10 @@ function disable_third_party_PCIe_card_Dell_default_cooling_response () {
   ipmitool -I $IDRAC_LOGIN_STRING raw 0x30 0xce 0x00 0x16 0x05 0x00 0x00 0x00 0x05 0x00 0x01 0x00 0x00 > /dev/null
 }
 
-# Returns :
-# - 0 if third-party PCIe card Dell default cooling response is currently DISABLED
-# - 1 if third-party PCIe card Dell default cooling response is currently ENABLED
-# - 2 if the current status returned by ipmitool command output is unexpected
-# function is_third_party_PCIe_card_Dell_default_cooling_response_disabled() {
-#   THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE=$(ipmitool -I $IDRAC_LOGIN_STRING raw 0x30 0xce 0x01 0x16 0x05 0x00 0x00 0x00)
-
-#   if [ "$THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" == "16 05 00 00 00 05 00 01 00 00" ]; then
-#     return 0
-#   elif [ "$THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" == "16 05 00 00 00 05 00 00 00 00" ]; then
-#     return 1
-#   else
-#     echo "Unexpected output: $THIRD_PARTY_PCIE_CARD_COOLING_RESPONSE" >&2
-#     return 2
-#   fi
-# }
-
 # Prepare traps in case of container exit
 function gracefull_exit () {
   apply_Dell_fan_control_profile
-  enable_third_party_PCIe_card_Dell_default_cooling_response
+  # enable_third_party_PCIe_card_Dell_default_cooling_response
   echo "/!\ WARNING /!\ Container stopped, Dell default dynamic fan control profile applied for safety."
   exit 0
 }

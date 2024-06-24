@@ -14,13 +14,21 @@ jobs:
     - name: Checkout
       uses: actions/checkout@v4
 
-    - name: Remove "_Docker" suffix from GitHub repository name to use it as image name
+    - name: Generate Github Container Registry Image Name
       uses: mad9000/actions-find-and-replace-string@3
-      id: docker_image_name
+      id: ghcrio_image_name
       with:
         source: ${{ github.repository }}
         find: '_Docker'
         replace: ''
+
+    - name: Generate Docker Hub Image Name
+      uses: mad9000/actions-find-and-replace-string@3
+      id: dockerhub_image_name
+      with:
+        source: ${{ steps.ghcrio_image_name.outputs.value }}
+        find: ${{ github.repository_owner }}
+        replace: ${{ secrets.DOCKERHUB_USERNAME }}
       
     - name: Docker meta
       id: meta
@@ -28,7 +36,7 @@ jobs:
       with:
         images: |
           ${{ steps.docker_image_name.outputs.value }}
-          ghcr.io/${{ steps.docker_image_name.outputs.value }}
+          ghcr.io/${{ steps.ghcrio_image_name.outputs.value }}
         tags: type=raw,value=latest
         
     - name: Login to Docker Hub

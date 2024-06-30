@@ -5,7 +5,7 @@
 # Dell iDRAC fan controller Docker image
 Download Docker image from :
 - [Docker Hub](https://hub.docker.com/r/mattcarroll/dell_idrac_fan_controller)
-- [GitHub Containers Repository](https://github.com/mattcarroll/Dell_iDRAC_fan_controller_Docker/pkgs/container/dell_idrac_fan_controller)
+- [GitHub Containers Repository](https://github.com/mwcarroll/Dell_iDRAC_fan_controller_Docker/pkgs/container/dell_idrac_fan_controller)
 
 <!-- TABLE OF CONTENTS -->
 <details>

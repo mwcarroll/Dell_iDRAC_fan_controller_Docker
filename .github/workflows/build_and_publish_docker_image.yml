@@ -37,7 +37,11 @@ jobs:
         images: |
           ${{ steps.docker_image_name.outputs.value }}
           ghcr.io/${{ steps.ghcrio_image_name.outputs.value }}
-        tags: type=raw,value=latest
+        tags: |
+          type=ref,event=branch
+          type=ref,event=pr
+          type=semver,pattern={{version}}
+          type=semver,pattern={{major}}.{{minor}}
         
     - name: Login to Docker Hub
       uses: docker/login-action@v3

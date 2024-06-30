@@ -59,6 +59,7 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: ghcr.io/${{ steps.ghcrio_image_name.outputs.value }}:latest
     - name: Build and push (hub.docker.com)
@@ -66,5 +67,6 @@ jobs:
       with:
         context: .
         file: ./Dockerfile
+        platforms: linux/amd64,linux/arm64
         push: true
         tags: ${{ steps.dockerhub_image_name.outputs.value }}:latest

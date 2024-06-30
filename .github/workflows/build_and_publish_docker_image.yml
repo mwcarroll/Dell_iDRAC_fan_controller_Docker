@@ -24,7 +24,7 @@ jobs:
       id: ghcrio_image_name
       with:
         source: ${{ steps.lower-repo.outputs.repository }}
-        find: '_Docker'
+        find: '_docker'
         replace: ''
 
     - name: Generate Docker Hub Image Name

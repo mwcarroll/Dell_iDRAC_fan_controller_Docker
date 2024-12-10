@@ -145,6 +145,11 @@ while true; do
     HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_1_FANSPEED)
     apply_user_fan_control_profile
     COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE >= $EXHAUST_OVERHEAT_1_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
+  else
+    DECIMAL_FAN_SPEED=$EXHAUST_OVERHEAT_0_FANSPEED
+    HEXADECIMAL_FAN_SPEED=$(convert_decimal_value_to_hexadecimal $EXHAUST_OVERHEAT_0_FANSPEED)
+    apply_user_fan_control_profile
+    COMMENT="Exhaust temperature $EXHAUST_TEMPERATURE < $EXHAUST_OVERHEAT_1_TEMPERATURE°C, ($DECIMAL_FAN_SPEED)% fan speed applied."
   fi
 
   # Enable or disable, depending on the user's choice, third-party PCIe card Dell default cooling response
